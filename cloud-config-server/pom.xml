@@ -8,10 +8,10 @@
 		<version>2.1.6.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.trilogy</groupId>
-	<artifactId>jenn-lasdaltontname-cloud-config-server</artifactId>
+	<groupId>com.trilogyed</groupId>
+	<artifactId>cloud-config-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>jenn-lasdaltontname-cloud-config-server</name>
+	<name>cloud-config-server</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>

@@ -11,4 +11,5 @@ public interface BookDao {
     void updatedBook(Book book);
     void deletedBook(int id);
     List<Book> getAllBooks();
+
 }

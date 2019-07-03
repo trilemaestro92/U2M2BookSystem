@@ -17,5 +17,5 @@ public interface NoteClient {
 
     // The interface needs the PUT route of the note-service with the request body to update and the id of the note
     @RequestMapping(value = "/note/{id}", method = RequestMethod.PUT)
-    public NoteListEntry updateNote(@RequestBody NoteListEntry note, @PathVariable int id);
+    public String updateNote(@RequestBody NoteListEntry note, @PathVariable int id);
 }

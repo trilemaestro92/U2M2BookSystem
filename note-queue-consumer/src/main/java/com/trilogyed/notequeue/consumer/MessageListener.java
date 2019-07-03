@@ -39,9 +39,9 @@ public class MessageListener {
     @RabbitListener(queues = NoteQueueConsumerApplication.UPDATE_QUEUE_NAME)
     public void receiveUpdateMessage(NoteListEntry msg) {
 
-        NoteListEntry note = client.updateNote(msg, msg.getNoteId());
+        String updateResponse = client.updateNote(msg, msg.getNoteId());
 
-        System.out.println(note.toString());
+        System.out.println(updateResponse);
     }
 
 

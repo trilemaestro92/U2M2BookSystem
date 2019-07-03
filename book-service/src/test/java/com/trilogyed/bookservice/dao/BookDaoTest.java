@@ -1,6 +1,7 @@
 package com.trilogyed.bookservice.dao;
 
 import com.trilogyed.bookservice.model.Book;
+import com.trilogyed.bookservice.model.BookViewModel;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,42 +36,53 @@ public class BookDaoTest {
 
     @Test
     public void addGetDeleteTask(){
-        Book book = new Book("Harry Potter", "J.K Rowling");
+        BookViewModel bvm = new BookViewModel("Harry Potter", "J.K Rowling",null);
 
-        book = bookDao.addBook(book);
-        Book book1 = bookDao.getBook(book.getBookId());
+        bvm = bookDao.addBook(bvm);
+
+        Book book = new Book();
+        book.setBookId(bvm.getId());
+        book.setAuthor(bvm.getAuthor());
+        book.setTitle(bvm.getTitle());
+
+        Book book1 = bookDao.getBook(bvm.getId());
         assertEquals(book1, book);
 
-        bookDao.deletedBook(book.getBookId());
+        bookDao.deletedBook(bvm.getId());
 
-        book1 = bookDao.getBook(book.getBookId());
+        book1 = bookDao.getBook(bvm.getId());
 
         assertNull(book1);
     }
 
     @Test
     public void updateTask(){
-        Book book = new Book("Harry Potter", "J.K Rowling");
+        BookViewModel bvm = new BookViewModel("Harry Potter", "J.K Rowling",null);
 
-        book = bookDao.addBook(book);
+        bvm = bookDao.addBook(bvm);
 
-        book.setTitle("Harry Potter 2");
-        book.setAuthor("J.S Rowling ");
+        bvm.setTitle("Harry Potter 2");
+        bvm.setAuthor("J.S Rowling ");
 
-        bookDao.updatedBook(book);
+        bookDao.updatedBook(bvm);
 
-        Book book1= bookDao.getBook(book.getBookId());
+        Book updatedBook = new Book();
+        updatedBook.setBookId(bvm.getId());
+        updatedBook.setTitle(bvm.getTitle());
+        updatedBook.setAuthor(bvm.getAuthor());
+        Book book1= bookDao.getBook(updatedBook.getBookId());
 
-        assertEquals(book1, book);
+        assertEquals(book1, updatedBook);
     }
 
     @Test
     public void getAllTasks(){
-        Book book = new Book("Harry Potter", "J.K Rowling");
+        BookViewModel book = new BookViewModel("Harry Potter", "J.K Rowling",null);
 
         book = bookDao.addBook(book);
 
-        book = new Book("Harry Potter 2", "J.S Rowling");
+        book = new BookViewModel("Harry Potter 2", "J.S Rowling",null);
+
         book = bookDao.addBook(book);
 
         List<Book> bookList = bookDao.getAllBooks();

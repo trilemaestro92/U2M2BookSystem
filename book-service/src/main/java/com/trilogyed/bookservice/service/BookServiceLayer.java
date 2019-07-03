@@ -1,6 +1,8 @@
 package com.trilogyed.bookservice.service;
 
 import com.trilogyed.bookservice.dao.BookDao;
+import com.trilogyed.bookservice.exception.NotFoundException;
+import com.trilogyed.bookservice.feignClient.NoteClient;
 import com.trilogyed.bookservice.model.Book;
 import com.trilogyed.bookservice.model.BookViewModel;
 import com.trilogyed.bookservice.model.Note;
@@ -21,23 +23,15 @@ public class BookServiceLayer {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    private NoteClient noteClient;
 
     private BookDao bookDao;
 
-    public BookServiceLayer(RabbitTemplate rabbitTemplate) {
-        this.rabbitTemplate = rabbitTemplate;
-    }
-
     @Autowired
-    public BookServiceLayer(BookDao bookDao) {
+    public BookServiceLayer(RabbitTemplate rabbitTemplate, NoteClient noteClient, BookDao bookDao) {
+        this.rabbitTemplate = rabbitTemplate;
+        this.noteClient = noteClient;
         this.bookDao = bookDao;
-
-
-    }
-
-    public BookViewModel findBook(int id) {
-        Book book = bookDao.getBook(id);
-        return buildBookViewModel(book);
     }
 
     public List<BookViewModel> findAllBooks() {
@@ -51,18 +45,6 @@ public class BookServiceLayer {
         return bvmList;
     }
 
-    @Transactional
-    public void updateBook(BookViewModel viewModel) {
-
-        Book book = new Book();
-        book.setBookId(viewModel.getId());
-        book.setTitle(viewModel.getTitle());
-        book.setAuthor(viewModel.getAuthor());
-
-        bookDao.updatedBook(book);
-    }
-
-    @Transactional
     public void removeBook(int id) {
 
         bookDao.deletedBook(id);
@@ -78,19 +60,64 @@ public class BookServiceLayer {
         return bvm;
     }
 
-    @Transactional
-    public BookViewModel createBookWithNotes(BookViewModel bookViewModel){
-        BookViewModel bvm = new BookViewModel();
 
-        bvm = bookDao.addBook(bvm);
+
+    public BookViewModel createBookWithNotes(BookViewModel bookViewModel){
+
+        BookViewModel bvm = new BookViewModel();
+        bvm = bookDao.addBook(bookViewModel);
 
         List<Note> noteList = bookViewModel.getNotes();
         System.out.println("Sending note list");
-        rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, noteList);
+        //rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, noteList);
         System.out.println("Note list sent");
-        return bvm;
+        return bookViewModel;
 
     }
+
+    public boolean updateBook(BookViewModel bookViewModel){
+
+        BookViewModel bvm = new BookViewModel();
+        bookDao.updatedBook(bookViewModel);
+
+        boolean isUpdated = false;
+        Book existingBook = bookDao.getBook(bookViewModel.getId());
+        if (existingBook == null) {
+            throw new NotFoundException("Book id " + bookViewModel.getId() + " not found");
+        } else {
+            try {
+                bookDao.updatedBook(bookViewModel);
+                isUpdated = true;
+                List<Note> noteList = bookViewModel.getNotes();
+                //rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, noteList);
+            } catch (Exception ex) {
+                isUpdated = false;
+            }
+        }
+        return isUpdated;
+
+    }
+
+    public BookViewModel findBook(int id) {
+        Book book = bookDao.getBook(id);
+        BookViewModel bvm = new BookViewModel();
+        if (book == null){
+            throw  new NotFoundException("Book id " + id + " not found!");
+        } else {
+            bvm.setId(book.getBookId());
+            bvm.setAuthor(book.getAuthor());
+            bvm.setTitle(book.getTitle());
+//            List<Note> mynotes = noteClient.getNotesByBookId();
+//            System.out.println(mynotes);
+//            bvm.setNotes(noteClient.getNotesByBookId());
+
+        }
+        return bvm;
+    }
+
+
+
+
 
 }
 

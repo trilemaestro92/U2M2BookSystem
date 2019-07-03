@@ -20,6 +20,13 @@ public class BookViewModel {
     public BookViewModel(){
 
     }
+
+    public BookViewModel(String title, String author, List<Note> notes) {
+        this.title = title;
+        this.author = author;
+        this.notes = notes;
+    }
+
     public BookViewModel(int id, String title, String author, List<Note> notes) {
         this.id = id;
         this.title = title;

@@ -9,30 +9,28 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+
 
 @Component
 public class BookServiceLayer {
 
+    public static final String EXCHANGE = "note-exchange";
+    public static final String ROUTING_KEY = "note.list.add.note";
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+
     private BookDao bookDao;
+
+    public BookServiceLayer(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
     @Autowired
     public BookServiceLayer(BookDao bookDao) {
-
         this.bookDao = bookDao;
-
-
-    }
-    @Transactional
-    public BookViewModel saveBook(BookViewModel viewModel) {
-        Book bookmdl = new Book();
-        bookmdl.setTitle(viewModel.getTitle());
-        bookmdl.setAuthor(viewModel.getAuthor());
-        bookmdl.setBookId(viewModel.getId());
-        bookmdl = bookDao.addBook(bookmdl);
-        viewModel.setId(bookmdl.getBookId());
-
-        viewModel.setNotes(null);
-        return  viewModel;
 
 
     }
@@ -76,6 +74,21 @@ public class BookServiceLayer {
         //Assemble the album view model
         BookViewModel bvm = new BookViewModel();
         bvm.setId(book.getBookId());
+        this.bookDao = bookDao;
+        return bvm;
+    }
+
+    @Transactional
+    public BookViewModel createBookWithNotes(BookViewModel bookViewModel){
+        BookViewModel bvm = new BookViewModel();
+
+        bvm = bookDao.addBook(bvm);
+
+        List<Note> noteList = bookViewModel.getNotes();
+        System.out.println("Sending note list");
+        rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, noteList);
+        System.out.println("Note list sent");
+        return bvm;
 
     }
 

@@ -23,6 +23,7 @@ public class BookJdbcController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Book createBook(@RequestBody @Valid Book book){
+
         return bookDao.addBook(book);
     }
 

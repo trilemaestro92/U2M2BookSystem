@@ -1,6 +1,7 @@
 package com.trilogyed.bookservice.dao;
 
 import com.trilogyed.bookservice.model.Book;
+import com.trilogyed.bookservice.model.BookViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -36,16 +37,16 @@ public class BookDaoJdbcTemplateImpl implements BookDao {
 
     @Override
     @Transactional
-    public Book addBook(Book book) {
+    public BookViewModel addBook(BookViewModel bvm) {
         jdbcTemplate.update(
                 INSERT_BOOK_SQL,
-                book.getTitle(),
-                book.getAuthor());
+                bvm.getTitle(),
+                bvm.getAuthor());
 
         int id = jdbcTemplate.queryForObject("select LAST_INSERT_ID()", Integer.class);
-        book.setBookId(id);
+        bvm.setId(id);
 
-        return book;
+        return bvm;
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.trilogyed.noteservice.controller;
 import com.trilogyed.noteservice.dao.NoteDaoJdbcTemplateImpl;
 import com.trilogyed.noteservice.exception.NotFoundException;
 import com.trilogyed.noteservice.model.Note;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -37,9 +39,10 @@ public class NoteController {
         return note;
     }
 
-    @GetMapping("/book/{book_id}")
+    @GetMapping("/book/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Note> getNotesForBookId(@PathVariable("book_id") int book_id) {
+    public List<Note> getNotesForBookId(
+            @PathVariable("book_id") int book_id) {
         List<Note> notesForBookId = noteDao.getNotesByBookId(book_id);
 
         if (notesForBookId.size() == 0) {
@@ -47,6 +50,8 @@ public class NoteController {
         }
 
         return notesForBookId;
+
+
     }
 
     @GetMapping

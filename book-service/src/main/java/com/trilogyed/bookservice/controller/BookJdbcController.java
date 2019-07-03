@@ -43,8 +43,8 @@ public class BookJdbcController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Book getBook(@PathVariable("id") int bookId){
-        return bookDao.getBook(bookId);
+    public BookViewModel getBook(@PathVariable("id") int bookId){
+        return serviceLayer.findBook(bookId);
     }
 
     @GetMapping()

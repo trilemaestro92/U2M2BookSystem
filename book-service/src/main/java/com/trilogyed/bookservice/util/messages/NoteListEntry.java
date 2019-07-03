@@ -1,13 +1,16 @@
-package com.trilogyed.noteservice.model;
+package com.trilogyed.bookservice.util.messages;
 
-public class Note {
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+public class NoteListEntry {
     private int noteId;
     private int bookId;
     private String note;
 
-    public Note(){}
+    public NoteListEntry(){}
 
-    public Note(int noteId, int bookId, String note) {
+    public NoteListEntry(int noteId, int bookId, String note) {
         this.noteId = noteId;
         this.bookId = bookId;
         this.note = note;

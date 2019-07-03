@@ -1,5 +1,7 @@
 package com.trilogyed.bookservice.model;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -7,9 +9,13 @@ import java.util.Objects;
 public class BookViewModel {
 
     private int id;
+    @NotNull(message = "title cannot be null")
+    @Size(max = 50,message = "title cannot exceed 50 characters" )
     private String title;
+    @NotNull(message = "author cannot be null")
+    @Size(max = 50,message = "author cannot exceed 50 characters" )
     private String author;
-    private List<Note> notes = new ArrayList<>();
+    private List<Note> notes;
 
     public BookViewModel(){
 

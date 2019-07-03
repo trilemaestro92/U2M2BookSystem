@@ -11,14 +11,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 
 @Component
 public class BookServiceLayer {
 
-    public static final String EXCHANGE = "note-exchange";
-    public static final String ROUTING_KEY = "note.list.add.note";
+    //    public static final String EXCHANGE = "note-exchange";
+//    public static final String ROUTING_KEY = "note.list.add.note";
+    public static final String EXCHANGE = "addQueue-note-exchange";
+    public static final String ROUTING_KEY = "note.list.add.controller";
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
@@ -61,21 +64,26 @@ public class BookServiceLayer {
     }
 
 
-
-    public BookViewModel createBookWithNotes(BookViewModel bookViewModel){
+    public BookViewModel createBookWithNotes(BookViewModel bookViewModel) {
 
         BookViewModel bvm = new BookViewModel();
         bvm = bookDao.addBook(bookViewModel);
 
         List<Note> noteList = bookViewModel.getNotes();
+
         System.out.println("Sending note list");
-        //rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, noteList);
+
+        for(Note note: noteList){
+            note.setBookId(bookViewModel.getId());
+            rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, note);
+        }
         System.out.println("Note list sent");
-        return bookViewModel;
+
+        return this.findBook(bvm.getId());
 
     }
 
-    public boolean updateBook(BookViewModel bookViewModel){
+    public boolean updateBook(BookViewModel bookViewModel) {
 
         BookViewModel bvm = new BookViewModel();
         bookDao.updatedBook(bookViewModel);
@@ -101,23 +109,17 @@ public class BookServiceLayer {
     public BookViewModel findBook(int id) {
         Book book = bookDao.getBook(id);
         BookViewModel bvm = new BookViewModel();
-        if (book == null){
-            throw  new NotFoundException("Book id " + id + " not found!");
+        if (book == null) {
+            throw new NotFoundException("Book id " + id + " not found!");
         } else {
             bvm.setId(book.getBookId());
             bvm.setAuthor(book.getAuthor());
             bvm.setTitle(book.getTitle());
-//            List<Note> mynotes = noteClient.getNotesByBookId();
-//            System.out.println(mynotes);
-//            bvm.setNotes(noteClient.getNotesByBookId());
+            bvm.setNotes(noteClient.getNotesByBookId(id));
 
         }
         return bvm;
     }
-
-
-
-
 
 }
 

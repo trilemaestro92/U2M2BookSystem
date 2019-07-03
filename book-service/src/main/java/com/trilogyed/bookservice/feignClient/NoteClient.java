@@ -10,6 +10,6 @@ import java.util.List;
 
 @FeignClient(name = "note-service")
 public interface NoteClient {
-    @RequestMapping(value = "note/book" , method = RequestMethod.GET)
-    public List<Note> getNotesByBookId();
+    @RequestMapping(value = "note/book/{book_id}" , method = RequestMethod.GET)
+    public List<Note> getNotesByBookId(@PathVariable("book_id") int id);
 }

@@ -1,5 +1,5 @@
-create schema if not exists note_test;
-use note_test;
+create schema if not exists note;
+use note;
 
 create table if not exists note (
 	note_id int not null auto_increment primary key,

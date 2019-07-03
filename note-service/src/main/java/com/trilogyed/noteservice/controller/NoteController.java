@@ -47,10 +47,7 @@ public class NoteController {
         if (notesForBookId.size() == 0) {
             throw new NotFoundException("No notes found for book_id "  + book_id);
         }
-
         return notesForBookId;
-
-
     }
 
     @GetMapping

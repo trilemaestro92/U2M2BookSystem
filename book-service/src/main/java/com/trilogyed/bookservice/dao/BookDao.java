@@ -9,7 +9,7 @@ public interface BookDao {
 
     BookViewModel addBook(BookViewModel bvm);
     Book getBook(int id);
-    void updatedBook(Book book);
+    void updatedBook(BookViewModel bvm);
     void deletedBook(int id);
     List<Book> getAllBooks();
 

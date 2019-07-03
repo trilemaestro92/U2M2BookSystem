@@ -33,18 +33,22 @@ public class BookServiceLayer {
         this.bookDao = bookDao;
     }
 
-    @Transactional
+    //@Transactional
     public BookViewModel createBookWithNotes(BookViewModel bookViewModel){
-        BookViewModel bvm = new BookViewModel();
 
-        bvm = bookDao.addBook(bvm);
+        BookViewModel bvm = new BookViewModel();
+        bvm = bookDao.addBook(bookViewModel);
 
         List<Note> noteList = bookViewModel.getNotes();
         System.out.println("Sending note list");
-        rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, noteList);
+        //rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, noteList);
         System.out.println("Note list sent");
-        return bvm;
+        return bookViewModel;
 
     }
+
+
+
+
 
 }

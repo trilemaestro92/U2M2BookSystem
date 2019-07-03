@@ -39,10 +39,9 @@ public class NoteController {
         return note;
     }
 
-    @GetMapping("/book/{id}")
+    @GetMapping("/book/{book_id}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Note> getNotesForBookId(
-            @PathVariable("book_id") int book_id) {
+    public List<Note> getNotesForBookId(@PathVariable("book_id") int book_id) {
         List<Note> notesForBookId = noteDao.getNotesByBookId(book_id);
 
         if (notesForBookId.size() == 0) {

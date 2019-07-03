@@ -15,13 +15,16 @@ import org.springframework.context.annotation.Bean;
 @EnableDiscoveryClient
 @EnableFeignClients
 public class NoteQueueConsumerApplication {
-	public static final String TOPIC_EXCHANGE_NAME = "queue-note-exchange";
-	public static final String QUEUE_NAME = "note-list-add-queue";
-	public static final String ROUTING_KEY = "note.list.add.#";
+	public static final String TOPIC_EXCHANGE_NAME = "addQueue-note-exchange";
+	public static final String ADD_QUEUE_NAME = "note-list-add-addQueue";
+	public static final String ADD_ROUTING_KEY = "note.list.add.#";
+
+	public static final String UPDATE_QUEUE_NAME = "note-list-update-addQueue";
+	public static final String UPDATE_ROUTING_KEY = "note.list.update.#";
 
 	@Bean
-	Queue queue() {
-		return new Queue(QUEUE_NAME, false);
+	Queue addQueue() {
+		return new Queue(ADD_QUEUE_NAME, false);
 	}
 
 	@Bean
@@ -30,9 +33,23 @@ public class NoteQueueConsumerApplication {
 	}
 
 	@Bean
-	Binding binding(Queue queue, TopicExchange exchange) {
-		return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY);
+	Binding addBinding(Queue addQueue, TopicExchange exchange) {
+		return BindingBuilder.bind(addQueue).to(exchange).with(ADD_ROUTING_KEY);
 	}
+
+
+
+
+	@Bean
+	Queue updateQueue() {
+		return new Queue(UPDATE_QUEUE_NAME, false);
+	}
+
+	@Bean
+	Binding updateBinding(Queue updateQueue, TopicExchange exchange) {
+		return BindingBuilder.bind(updateQueue).to(exchange).with(UPDATE_ROUTING_KEY);
+	}
+
 
 	@Bean
 	public Jackson2JsonMessageConverter jackson2JsonMessageConverter() {

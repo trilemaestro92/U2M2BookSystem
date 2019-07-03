@@ -1,14 +1,22 @@
 package com.trilogyed.noteservice.model;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import java.util.Objects;
+
 public class Note {
+
     private int noteId;
+    @NotNull(message = "bookId can not be null")
     private int bookId;
+    @Size(max = 255, message = "note cannot exceed 255 characters")
     private String note;
 
-    public Note(){}
+    public Note() {
+    }
 
-    public Note(int noteId, int bookId, String note) {
-        this.noteId = noteId;
+    public Note(int bookId, String note) {
         this.bookId = bookId;
         this.note = note;
     }
@@ -38,8 +46,23 @@ public class Note {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Note note1 = (Note) o;
+        return noteId == note1.noteId &&
+                bookId == note1.bookId &&
+                Objects.equals(note, note1.note);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(noteId, bookId, note);
+    }
+
+    @Override
     public String toString() {
-        return "NoteListEntry{" +
+        return "Note{" +
                 "noteId=" + noteId +
                 ", bookId=" + bookId +
                 ", note='" + note + '\'' +

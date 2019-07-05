@@ -18,8 +18,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 @Component
 public class BookServiceLayer {
 
-    //    public static final String EXCHANGE = "note-exchange";
-//    public static final String ROUTING_KEY = "note.list.add.note";
     public static final String EXCHANGE = "addQueue-note-exchange";
     public static final String ROUTING_KEY = "note.list.add.controller";
 
@@ -120,6 +118,7 @@ public class BookServiceLayer {
         }
         return bvm;
     }
+
 
 }
 

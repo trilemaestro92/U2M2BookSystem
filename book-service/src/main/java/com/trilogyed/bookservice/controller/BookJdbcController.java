@@ -19,20 +19,12 @@ import java.util.List;
 @RequestMapping("/book")
 public class BookJdbcController {
 
-//    public static final String EXCHANGE = "queue-demo-exchange";
-//    public static final String ROUTING_KEY = "note.list.add.note.controller";
-//
-//    @Autowired
-//    private RabbitTemplate rabbitTemplate;
-
     @Autowired
     BookDao bookDao;
     @Autowired
     BookServiceLayer serviceLayer;
 
-//    public BookJdbcController(RabbitTemplate rabbitTemplate) {
-//        this.rabbitTemplate = rabbitTemplate;
-//    }
+
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -69,20 +61,5 @@ public class BookJdbcController {
         }
         bookDao.updatedBook(bvm);
     }
-
-
-
-    // TODO - Not sure about this? Need to update... What is the relation for book/note?
-//    @RequestMapping(value = "/note", method = RequestMethod.POST)
-//    public String createAccount(@RequestBody Note note) {
-//        // create message to send to email list creation queue
-//
-//        NoteListEntry msg = new NoteListEntry(note.getNoteId(), note.getBookId(), note.getNote());
-//        System.out.println("Sending message...");
-//        rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, msg);
-//        System.out.println("Message Sent");
-//
-//        return "Note Created";
-//    }
 
 }

@@ -90,11 +90,44 @@ public class BookServiceLayerTest {
         assertEquals(fromServiceList.size(), bookViewModelList.size());
     }
 
+
     @Test
     public void removeBook() {
+        List<Note> noteList = new ArrayList<>();
+        noteList.add(new Note(1,"Magical!"));
+        noteList.add(new Note(1,"Way better than the movies !"));
+
+        BookViewModel book = new BookViewModel();
+        book.setAuthor("J.K Rowling");
+        book.setTitle("Harry Potter");
+        book.setNotes(noteList);
+
+        book = serviceLayer.createBookWithNotes(book);
+
+        boolean isDeleted = serviceLayer.removeBook(book.getId());
+
+        assertEquals(true, isDeleted);
     }
 
     @Test
     public void updateBook() {
+        List<Note> noteList = new ArrayList<>();
+        noteList.add(new Note(1,"Magical!"));
+        noteList.add(new Note(1,"Way better than the movies !"));
+
+        BookViewModel book = new BookViewModel();
+        book.setAuthor("J.K Rowling");
+        book.setTitle("Harry Potter");
+        book.setNotes(noteList);
+
+        book = serviceLayer.createBookWithNotes(book);
+
+        book.setAuthor("T.J Rowling");
+        book.setTitle("Harry Potter 3");
+        book.setNotes(noteList);
+
+        boolean isUpdated= serviceLayer.updateBook(book);
+        assertEquals(true, isUpdated);
+
     }
 }

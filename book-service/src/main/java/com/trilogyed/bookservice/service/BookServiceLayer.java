@@ -19,7 +19,10 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 public class BookServiceLayer {
 
     public static final String EXCHANGE = "addQueue-note-exchange";
-    public static final String ROUTING_KEY = "note.list.add.controller";
+    public static final String ADD_ROUTING_KEY = "note.list.add.controller";
+    public static final String UPDATE_ROUTING_KEY = "note.list.update.controller";
+
+
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
@@ -46,19 +49,20 @@ public class BookServiceLayer {
         return bvmList;
     }
 
-    public void removeBook(int id) {
-
-        bookDao.deletedBook(id);
-    }
-
-    //Helper Methods
-    private BookViewModel buildBookViewModel(Book book) {
-
-        //Assemble the album view model
-        BookViewModel bvm = new BookViewModel();
-        bvm.setId(book.getBookId());
-        this.bookDao = bookDao;
-        return bvm;
+    public boolean removeBook(int id) {
+        boolean isDeleted;
+        Book existingBook= bookDao.getBook(id);
+        if (existingBook == null) {
+            throw new NotFoundException("Book id " + id + " not found");
+        } else {
+            try {
+                bookDao.deletedBook(id);
+                isDeleted = true;
+            } catch (Exception ex) {
+                isDeleted = false;
+            }
+        }
+        return isDeleted;
     }
 
 
@@ -73,7 +77,7 @@ public class BookServiceLayer {
 
         for(Note note: noteList){
             note.setBookId(bookViewModel.getId());
-            rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, note);
+            rabbitTemplate.convertAndSend(EXCHANGE, ADD_ROUTING_KEY, note);
         }
         System.out.println("Note list sent");
 
@@ -95,7 +99,13 @@ public class BookServiceLayer {
                 bookDao.updatedBook(bookViewModel);
                 isUpdated = true;
                 List<Note> noteList = bookViewModel.getNotes();
-                //rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, noteList);
+                System.out.println("Sending note list");
+
+                for(Note note: noteList){
+                    note.setBookId(bookViewModel.getId());
+                    rabbitTemplate.convertAndSend(EXCHANGE, UPDATE_ROUTING_KEY, note);
+                }
+                System.out.println("Note list sent");
             } catch (Exception ex) {
                 isUpdated = false;
             }
@@ -116,6 +126,16 @@ public class BookServiceLayer {
             bvm.setNotes(noteClient.getNotesByBookId(id));
 
         }
+        return bvm;
+    }
+
+    //Helper Methods
+    private BookViewModel buildBookViewModel(Book book) {
+
+        //Assemble the album view model
+        BookViewModel bvm = new BookViewModel();
+        bvm.setId(book.getBookId());
+        this.bookDao = bookDao;
         return bvm;
     }
 

@@ -44,9 +44,6 @@ public class NoteController {
     public List<Note> getNotesForBookId(@PathVariable("book_id") int book_id) {
         List<Note> notesForBookId = noteDao.getNotesByBookId(book_id);
 
-        if (notesForBookId.size() == 0) {
-            throw new NotFoundException("No notes found for book_id "  + book_id);
-        }
         return notesForBookId;
     }
 

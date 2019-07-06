@@ -3,12 +3,8 @@ package com.trilogyed.bookservice.controller;
 import com.trilogyed.bookservice.dao.BookDao;
 import com.trilogyed.bookservice.model.Book;
 import com.trilogyed.bookservice.model.BookViewModel;
-import com.trilogyed.bookservice.model.Note;
 import com.trilogyed.bookservice.service.BookServiceLayer;
-import com.trilogyed.bookservice.util.messages.NoteListEntry;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,14 +37,14 @@ public class BookJdbcController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public List<Book> getAllBooks(){
-        return bookDao.getAllBooks();
+    public List<BookViewModel> getAllBooks(){
+        return serviceLayer.findAllBooks();
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBook(@PathVariable("id") int bookId) {
-        bookDao.deletedBook(bookId);
+        bookDao.deleteBook(bookId);
     }
 
     @PutMapping("/{id}")
@@ -59,7 +55,7 @@ public class BookJdbcController {
         if (bookId != bvm.getId()) {
             throw new IllegalArgumentException("Book ID on path must match the ID in the Book object");
         }
-        bookDao.updatedBook(bvm);
+        serviceLayer.updateBook(bvm);
     }
 
 }

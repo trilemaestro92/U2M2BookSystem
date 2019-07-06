@@ -7,10 +7,10 @@ import java.util.List;
 
 public interface BookDao {
 
-    BookViewModel addBook(BookViewModel bvm);
+    Book addBook(Book book);
     Book getBook(int id);
-    void updatedBook(BookViewModel bvm);
-    void deletedBook(int id);
+    void updateBook(Book book);
+    void deleteBook(int id);
     List<Book> getAllBooks();
 
 }

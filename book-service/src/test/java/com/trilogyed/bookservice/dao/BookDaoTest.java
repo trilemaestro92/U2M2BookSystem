@@ -25,63 +25,55 @@ public class BookDaoTest {
     public void setUp() throws Exception {
         List<Book> allBooks = bookDao.getAllBooks();
         allBooks.stream()
-                .forEach(book -> bookDao.deletedBook(book.getBookId()));
+                .forEach(book -> bookDao.deleteBook(book.getBookId()));
     }
     @After
     public void tearDown() throws Exception {
         List<Book> allBooks = bookDao.getAllBooks();
         allBooks.stream()
-                .forEach(book -> bookDao.deletedBook(book.getBookId()));
+                .forEach(book -> bookDao.deleteBook(book.getBookId()));
     }
 
     @Test
     public void addGetDeleteTask(){
-        BookViewModel bvm = new BookViewModel("Harry Potter", "J.K Rowling",null);
+        Book book = new Book("Harry Potter", "J.K Rowling");
 
-        bvm = bookDao.addBook(bvm);
+        book = bookDao.addBook(book);
 
-        Book book = new Book();
-        book.setBookId(bvm.getId());
-        book.setAuthor(bvm.getAuthor());
-        book.setTitle(bvm.getTitle());
 
-        Book book1 = bookDao.getBook(bvm.getId());
+        Book book1 = bookDao.getBook(book.getBookId());
         assertEquals(book1, book);
 
-        bookDao.deletedBook(bvm.getId());
+        bookDao.deleteBook(book.getBookId());
 
-        book1 = bookDao.getBook(bvm.getId());
+        book1 = bookDao.getBook(book.getBookId());
 
         assertNull(book1);
     }
 
     @Test
     public void updateTask(){
-        BookViewModel bvm = new BookViewModel("Harry Potter", "J.K Rowling",null);
+        Book book = new Book("Harry Potter", "J.K Rowling");
 
-        bvm = bookDao.addBook(bvm);
+        book = bookDao.addBook(book);
 
-        bvm.setTitle("Harry Potter 2");
-        bvm.setAuthor("J.S Rowling ");
+        book.setTitle("Harry Potter 2");
+        book.setAuthor("J.S Rowling ");
 
-        bookDao.updatedBook(bvm);
+        bookDao.updateBook(book);
 
-        Book updatedBook = new Book();
-        updatedBook.setBookId(bvm.getId());
-        updatedBook.setTitle(bvm.getTitle());
-        updatedBook.setAuthor(bvm.getAuthor());
-        Book book1= bookDao.getBook(updatedBook.getBookId());
+        Book book1= bookDao.getBook(book.getBookId());
 
-        assertEquals(book1, updatedBook);
+        assertEquals(book1, book);
     }
 
     @Test
     public void getAllTasks(){
-        BookViewModel book = new BookViewModel("Harry Potter", "J.K Rowling",null);
+        Book book = new Book("Harry Potter", "J.K Rowling");
 
         book = bookDao.addBook(book);
 
-        book = new BookViewModel("Harry Potter 2", "J.S Rowling",null);
+        book = new Book("Harry Potter 2", "J.S Rowling");
 
         book = bookDao.addBook(book);
 

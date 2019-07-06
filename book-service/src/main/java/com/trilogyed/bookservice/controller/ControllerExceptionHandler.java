@@ -58,4 +58,13 @@ public class ControllerExceptionHandler {
         ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error,HttpStatus.UNPROCESSABLE_ENTITY);
         return responseEntity;
     }
+
+    @ExceptionHandler(value = {InterruptedException.class})
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ResponseEntity<VndErrors> interruptedException(InterruptedException e, WebRequest request){
+        VndErrors error= new VndErrors(request.toString(),e.getMessage());
+        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error,HttpStatus.UNPROCESSABLE_ENTITY);
+        return responseEntity;
+    }
+
 }

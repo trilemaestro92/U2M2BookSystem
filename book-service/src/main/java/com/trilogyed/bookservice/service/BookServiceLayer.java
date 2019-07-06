@@ -35,15 +35,25 @@ public class BookServiceLayer {
         this.bookDao = bookDao;
     }
 
+    public BookViewModel findBook(int id) {
+        Book book = bookDao.getBook(id);
+        if (book != null) {
+            BookViewModel bvm = buildBookViewModel(book);
+            return bvm;
+        } else throw new NotFoundException("Book id " + id + " not found!");
+    }
+
+
     public List<BookViewModel> findAllBooks() {
         List<Book> bookList = bookDao.getAllBooks();
-        List<BookViewModel> bvmList = new ArrayList<>();
-
-        for (Book book : bookList) {
-            BookViewModel bvm = buildBookViewModel(book);
-            bvmList.add(bvm);
-        }
-        return bvmList;
+        if (bookList != null) {
+            List<BookViewModel> bookViewModelList = new ArrayList<>();
+            for (Book book : bookList) {
+                BookViewModel bvm = buildBookViewModel(book);
+                bookViewModelList.add(bvm);
+            }
+            return bookViewModelList;
+        } else throw new NotFoundException("No books in list.");
     }
 
     public boolean removeBook(int id) {
@@ -63,7 +73,7 @@ public class BookServiceLayer {
     }
 
 
-    public BookViewModel createBookWithNotes(BookViewModel bookViewModel) {
+    public BookViewModel createBookWithNotes(BookViewModel bookViewModel) throws InterruptedException {
         Book book = buildBookFromViewModel(bookViewModel);
         book = bookDao.addBook(book);
         bookViewModel.setId(book.getBookId());
@@ -76,6 +86,8 @@ public class BookServiceLayer {
             rabbitTemplate.convertAndSend(EXCHANGE, ADD_ROUTING_KEY, note);
         }
         System.out.println("Note list sent");
+        Thread.sleep(2000);
+        bookViewModel.setNotes(noteClient.getNotesByBookId(book.getBookId()));
         return bookViewModel;
     }
 
@@ -103,13 +115,6 @@ public class BookServiceLayer {
         return isUpdated;
     }
 
-    public BookViewModel findBook(int id) {
-        Book book = bookDao.getBook(id);
-        if (book != null) {
-            BookViewModel bvm = buildBookViewModel(book);
-            return bvm;
-        } else throw new NotFoundException("Book id " + id + " not found!");
-    }
 
     //Helper Methods
     private BookViewModel buildBookViewModel(Book book) {
@@ -117,7 +122,8 @@ public class BookServiceLayer {
         bvm.setId(book.getBookId());
         bvm.setAuthor(book.getAuthor());
         bvm.setTitle(book.getTitle());
-        bvm.setNotes(noteClient.getNotesByBookId(book.getBookId()));
+        List<Note> noteList = noteClient.getNotesByBookId(book.getBookId());
+        bvm.setNotes(noteList);
         return bvm;
     }
 
@@ -128,10 +134,4 @@ public class BookServiceLayer {
         book.setTitle(bvm.getTitle());
         return book;
     }
-
 }
-
-
-
-
-

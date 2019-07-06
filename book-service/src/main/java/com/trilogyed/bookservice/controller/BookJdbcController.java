@@ -24,7 +24,7 @@ public class BookJdbcController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BookViewModel createBook(@RequestBody @Valid BookViewModel bookViewModel){
+    public BookViewModel createBook(@RequestBody @Valid BookViewModel bookViewModel) throws InterruptedException {
 
         return serviceLayer.createBookWithNotes(bookViewModel);
     }
@@ -37,14 +37,14 @@ public class BookJdbcController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public List<Book> getAllBooks(){
-        return bookDao.getAllBooks();
+    public List<BookViewModel> getAllBooks(){
+        return serviceLayer.findAllBooks();
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBook(@PathVariable("id") int bookId) {
-        bookDao.deleteBook(bookId);
+        serviceLayer.removeBook(bookId);
     }
 
     @PutMapping("/{id}")

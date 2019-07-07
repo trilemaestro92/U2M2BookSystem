@@ -82,7 +82,6 @@ public class BookServiceLayer {
             }
             System.out.println("Note list sent");
         }
-
         return this.findBook(bookViewModel.getId());
 
     }
@@ -99,16 +98,18 @@ public class BookServiceLayer {
             try {
                 bookDao.updateBook(book);
                 List<Note> noteList = bookViewModel.getNotes();
-                if(bookViewModel.getNotes() != null){
                     System.out.println("Sending note list");
                     for(Note note: noteList){
-                        note.setBookId(bookViewModel.getId());
-                        rabbitTemplate.convertAndSend(EXCHANGE, UPDATE_ROUTING_KEY, note);
+                        if(note.getNoteId() == 0) {
+                            note.setBookId(bookViewModel.getId());
+                            rabbitTemplate.convertAndSend(EXCHANGE, ADD_ROUTING_KEY, note);
+                        }
+                        else {
+                            note.setBookId(bookViewModel.getId());
+                            rabbitTemplate.convertAndSend(EXCHANGE, UPDATE_ROUTING_KEY, note);
+                        }
                     }
                     System.out.println("Note list sent");
-                }else {
-                    rabbitTemplate.convertAndSend(EXCHANGE, UPDATE_ROUTING_KEY, noteList);
-                }
                 isUpdated = true;
 
             } catch (Exception ex) {

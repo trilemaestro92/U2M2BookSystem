@@ -41,32 +41,41 @@ public class BookServiceLayerTest {
         noteList.add(new Note(1,"Magical!"));
         noteList.add(new Note(1,"Way better than the movies !"));
 
-        Book bookNoNotes = new Book();
-        bookNoNotes.setBookId(1);
-        bookNoNotes.setAuthor("J.K Rowling");
-        bookNoNotes.setTitle("Harry Potter");
-
-        BookViewModel book = new BookViewModel();
-        book.setId(1);
+        Book book = new Book();
+        book.setBookId(1);
         book.setAuthor("J.K Rowling");
         book.setTitle("Harry Potter");
-        book.setNotes(noteList);
 
-        BookViewModel book1= new BookViewModel();
+        Book book1= new Book();
         book1.setAuthor("J.K Rowling");
         book1.setTitle("Harry Potter");
-        book1.setNotes(noteList);
+
+
+        Book bookA = new Book();
+        book.setBookId(1);
+        book.setAuthor("LOTR");
+        book.setTitle("JRR Tolkien");
+
+        Book bookA1= new Book();
+        book.setAuthor("LOTR");
+        book.setTitle("JRR Tolkien");
+
+        BookViewModel bvm = new BookViewModel();
+        bvm.setId(1);
+        bvm.setTitle("Harry Potter");
+        bvm.setNotes(noteList);
 
         List<Book> bookList= new ArrayList<>();
-        bookList.add(bookNoNotes);
+        bookList.add(book);
 
         doReturn(book).when(bookDao).addBook(book1);
-        doReturn(bookNoNotes).when(bookDao).getBook(1);
+        doReturn(book).when(bookDao).getBook(1);
+
         doReturn(noteList).when(noteClient).getNotesByBookId(1);
         doReturn(bookList).when(bookDao).getAllBooks();
     }
 
-
+//
     @Test
     public void saveFindFindAllBook() {
         List<Note> noteList = new ArrayList<>();
@@ -89,7 +98,18 @@ public class BookServiceLayerTest {
         List<BookViewModel> fromServiceList = serviceLayer.findAllBooks();
         assertEquals(fromServiceList.size(), bookViewModelList.size());
     }
+    @Test
+    public void saveBookWithoutNotes(){
+        BookViewModel book = new BookViewModel();
+        book.setAuthor("J.K Rowling");
+        book.setTitle("Harry Potter");
+        book.setNotes(null);
 
+        book = serviceLayer.createBookWithNotes(book);
+
+        BookViewModel fromService = serviceLayer.findBook(book.getId());
+        assertEquals(fromService, book);
+    }
 
     @Test
     public void removeBook() {

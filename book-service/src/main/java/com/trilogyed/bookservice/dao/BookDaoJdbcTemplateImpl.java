@@ -37,16 +37,16 @@ public class BookDaoJdbcTemplateImpl implements BookDao {
 
     @Override
     @Transactional
-    public BookViewModel addBook(BookViewModel bvm) {
+    public Book addBook(Book book) {
         jdbcTemplate.update(
                 INSERT_BOOK_SQL,
-                bvm.getTitle(),
-                bvm.getAuthor());
+                book.getTitle(),
+                book.getAuthor());
 
         int id = jdbcTemplate.queryForObject("select LAST_INSERT_ID()", Integer.class);
-        bvm.setId(id);
+        book.setBookId(id);
 
-        return bvm;
+        return book;
     }
 
     @Override
@@ -59,16 +59,16 @@ public class BookDaoJdbcTemplateImpl implements BookDao {
     }
 
     @Override
-    public void updatedBook(BookViewModel bvm) {
+    public void updateBook(Book book) {
         jdbcTemplate.update(
                 UPDATE_BOOK_SQL,
-                bvm.getTitle(),
-                bvm.getAuthor(),
-                bvm.getId());
+                book.getTitle(),
+                book.getAuthor(),
+                book.getBookId());
     }
 
     @Override
-    public void deletedBook(int id) {
+    public void deleteBook(int id) {
         jdbcTemplate.update(DELETE_BOOK_SQL, id);
     }
 

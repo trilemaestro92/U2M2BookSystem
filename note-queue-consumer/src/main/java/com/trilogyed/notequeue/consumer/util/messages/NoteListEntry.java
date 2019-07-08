@@ -1,5 +1,6 @@
 package com.trilogyed.notequeue.consumer.util.messages;
 
+
 public class NoteListEntry {
     private int noteId;
     private int bookId;

@@ -55,7 +55,6 @@ public class BookServiceLayer {
             throw new NotFoundException("Book id " + id + " not found!");
         } else {
             bvm = buildViewModelFromBook(book);
-
         }
         return bvm;
     }

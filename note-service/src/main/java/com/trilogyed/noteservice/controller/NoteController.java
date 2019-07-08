@@ -55,7 +55,6 @@ public class NoteController {
     @ResponseStatus(HttpStatus.OK)
     public String updateNote(@PathVariable("id") int id, @RequestBody @Valid Note note) {
         if (note.getNoteId() == 0) {
-            System.out.println();
             note.setNoteId(id);
         }
         if (id != note.getNoteId()) {

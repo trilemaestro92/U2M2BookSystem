@@ -2,13 +2,10 @@ package com.trilogyed.notequeue.consumer;
 
 import com.trilogyed.notequeue.consumer.util.feign.NoteClient;
 import com.trilogyed.notequeue.consumer.util.messages.Note;
-import feign.FeignException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.amqp.rabbit.listener.exception.ListenerExecutionFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.validation.Valid;
 
 @Service
 public class MessageListener {
@@ -31,9 +28,9 @@ public class MessageListener {
 
             // this is the client (connection to the note-service) creating a POST with the msg comming in
             Note note = client.createNote(msg);
-            System.out.println("Created: " + note.toString());
 
             // Print the note for confirmation
+            System.out.println("Created: " + note.toString());
 
         } else {
             Note note = msg;

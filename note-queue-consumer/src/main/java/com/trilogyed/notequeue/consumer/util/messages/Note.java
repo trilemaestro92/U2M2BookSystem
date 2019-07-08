@@ -1,8 +1,6 @@
 package com.trilogyed.notequeue.consumer.util.messages;
 
 
-import javax.validation.constraints.Size;
-
 public class Note {
 
     private int noteId;

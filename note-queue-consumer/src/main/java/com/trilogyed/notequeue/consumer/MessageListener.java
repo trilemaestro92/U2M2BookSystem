@@ -25,17 +25,13 @@ public class MessageListener {
     // This listener should accept a msg and use that message to send to the client's createNote method which takes the
     // msg and goes to POST [note-service-host-PORT]/note
     @RabbitListener(queues = NoteQueueConsumerApplication.QUEUE_NAME)
-    public void receiveAddMessage(@Valid Note msg) {
+    public void receiveAddMessage(Note msg) {
 
         if (msg.getNoteId() == 0) {
 
             // this is the client (connection to the note-service) creating a POST with the msg comming in
-            try{
-                Note note = client.createNote(msg);
-                System.out.println("Created: " + note.toString());
-            }catch (FeignException feignE){
-                System.out.println("You cant send a empty string");
-            }
+            Note note = client.createNote(msg);
+            System.out.println("Created: " + note.toString());
 
             // Print the note for confirmation
 

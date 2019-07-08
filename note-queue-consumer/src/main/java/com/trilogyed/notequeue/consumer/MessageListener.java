@@ -20,7 +20,7 @@ public class MessageListener {
 
     // This listener should accept a msg and use that message to send to the client's createNote method which takes the
     // msg and goes to POST [note-service-host-PORT]/note
-    @RabbitListener(queues = NoteQueueConsumerApplication.ADD_QUEUE_NAME)
+    @RabbitListener(queues = NoteQueueConsumerApplication.QUEUE_NAME)
     public void receiveAddMessage(NoteListEntry msg) {
 
         // this is the client (connection to the note-service) creating a POST with the msg comming in
@@ -36,14 +36,14 @@ public class MessageListener {
     }
 
 
-    @RabbitListener(queues = NoteQueueConsumerApplication.UPDATE_QUEUE_NAME)
-    public void receiveUpdateMessage(NoteListEntry msg) {
-
-        String updateResponse = client.updateNote(msg, msg.getNoteId());
-
-        System.out.println(updateResponse);
-    }
-
+//    @RabbitListener(queues = NoteQueueConsumerApplication.UPDATE_QUEUE_NAME)
+//    public void receiveUpdateMessage(NoteListEntry msg) {
+//
+//        String updateResponse = client.updateNote(msg, msg.getNoteId());
+//
+//        System.out.println(updateResponse);
+//    }
+//
 
 
 

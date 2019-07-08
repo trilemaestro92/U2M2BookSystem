@@ -17,9 +17,9 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 @Component
 public class BookServiceLayer {
 
-    public static final String EXCHANGE = "addQueue-note-exchange";
-    public static final String ADD_ROUTING_KEY = "note.list.add.controller";
-    public static final String UPDATE_ROUTING_KEY = "note.list.update.controller";
+    public static final String EXCHANGE = "note-exchange";
+    public static final String ROUTING_KEY = "note.list.add.controller";
+//    public static final String UPDATE_ROUTING_KEY = "note.list.update.controller";
 
 
 
@@ -78,7 +78,7 @@ public class BookServiceLayer {
 
             for(Note note: noteList){
                 note.setBookId(bookViewModel.getId());
-                rabbitTemplate.convertAndSend(EXCHANGE, ADD_ROUTING_KEY, note);
+                rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, note);
             }
             System.out.println("Note list sent");
         }
@@ -102,11 +102,11 @@ public class BookServiceLayer {
                     for(Note note: noteList){
                         if(note.getNoteId() == 0) {
                             note.setBookId(bookViewModel.getId());
-                            rabbitTemplate.convertAndSend(EXCHANGE, ADD_ROUTING_KEY, note);
+                            rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, note);
                         }
                         else {
                             note.setBookId(bookViewModel.getId());
-                            rabbitTemplate.convertAndSend(EXCHANGE, UPDATE_ROUTING_KEY, note);
+//                            rabbitTemplate.convertAndSend(EXCHANGE, UPDATE_ROUTING_KEY, note);
                         }
                     }
                     System.out.println("Note list sent");
@@ -117,7 +117,6 @@ public class BookServiceLayer {
             }
         }
         return isUpdated;
-
     }
 
     public BookViewModel findBook(int id) {

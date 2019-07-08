@@ -9,7 +9,8 @@ public class Note {
     private int noteId;
     @NotNull(message = "book id can not be null")
     private int bookId;
-    @Size(max = 255, message = "note cannot exceed 255 characters")
+    @NotNull(message = "note can not be null")
+    @Size(max = 255, min = 1, message = "note cannot exceed 255 characters")
     private String note;
 
     public Note() {

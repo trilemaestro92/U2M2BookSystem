@@ -39,10 +39,12 @@ public class BookServiceLayer {
     @Transactional
     public BookViewModel createBookWithNotes(BookViewModel bookViewModel) {
         Book book = buildBookFromViewModel(bookViewModel);
+        BookViewModel returnedBook;
         book = bookDao.addBook(book);
         bookViewModel.setId(book.getBookId());
         sendNotesToQueue(bookViewModel);
-        return this.findBook(bookViewModel.getId());
+        returnedBook = findBook(bookViewModel.getId());
+        return returnedBook;
     }
 
     public BookViewModel findBook(int id) {

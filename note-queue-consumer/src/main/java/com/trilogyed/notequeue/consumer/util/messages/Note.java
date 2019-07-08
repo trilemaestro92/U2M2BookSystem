@@ -1,14 +1,14 @@
 package com.trilogyed.notequeue.consumer.util.messages;
 
 
-public class NoteListEntry {
+public class Note {
     private int noteId;
     private int bookId;
     private String note;
 
-    public NoteListEntry(){}
+    public Note(){}
 
-    public NoteListEntry(int noteId, int bookId, String note) {
+    public Note(int noteId, int bookId, String note) {
         this.noteId = noteId;
         this.bookId = bookId;
         this.note = note;
@@ -40,7 +40,7 @@ public class NoteListEntry {
 
     @Override
     public String toString() {
-        return "NoteListEntry{" +
+        return "Note{" +
                 "noteId=" + noteId +
                 ", bookId=" + bookId +
                 ", note='" + note + '\'' +

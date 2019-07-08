@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class BookServiceLayer {
 
     public static final String EXCHANGE = "note-exchange";
-    public static final String ROUTING_KEY = "note.list.add.controller";
+    public static final String ROUTING_KEY = "note.controller";
 
 
     @Autowired
@@ -106,11 +106,7 @@ public class BookServiceLayer {
         return isDeleted;
     }
 
-    //Helper Methods
-
     private BookViewModel buildViewModelFromBook(Book book) {
-
-        //Assemble the album view model
         BookViewModel bvm = new BookViewModel();
         bvm.setId(book.getBookId());
         bvm.setAuthor(book.getAuthor());

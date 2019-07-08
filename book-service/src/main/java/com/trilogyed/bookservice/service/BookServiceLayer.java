@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Component
@@ -35,6 +36,27 @@ public class BookServiceLayer {
         this.bookDao = bookDao;
     }
 
+    @Transactional
+    public BookViewModel createBookWithNotes(BookViewModel bookViewModel) {
+        Book book = buildBookFromViewModel(bookViewModel);
+        book = bookDao.addBook(book);
+        bookViewModel.setId(book.getBookId());
+        sendNotesToQueue(bookViewModel);
+        return this.findBook(bookViewModel.getId());
+    }
+
+    public BookViewModel findBook(int id) {
+        Book book = bookDao.getBook(id);
+        BookViewModel bvm;
+        if (book == null) {
+            throw new NotFoundException("Book id " + id + " not found!");
+        } else {
+            bvm = buildViewModelFromBook(book);
+
+        }
+        return bvm;
+    }
+
     public List<BookViewModel> findAllBooks() {
         List<Book> bookList = bookDao.getAllBooks();
         List<BookViewModel> bvmList = new ArrayList<>();
@@ -46,35 +68,8 @@ public class BookServiceLayer {
         return bvmList;
     }
 
-    public boolean removeBook(int id) {
-        boolean isDeleted;
-        Book existingBook= bookDao.getBook(id);
-        if (existingBook == null) {
-            throw new NotFoundException("Book id " + id + " not found");
-        } else {
-            try {
-                bookDao.deleteBook(id);
-                isDeleted = true;
-            } catch (Exception ex) {
-                isDeleted = false;
-            }
-        }
-        return isDeleted;
-    }
-
-
-    public BookViewModel createBookWithNotes(BookViewModel bookViewModel) {
-
-        Book book = buildBookFromViewModel(bookViewModel);
-        book = bookDao.addBook(book);
-        bookViewModel.setId(book.getBookId());
-        sendNotesToQueue(bookViewModel);
-        return this.findBook(bookViewModel.getId());
-
-    }
-
+    @Transactional
     public boolean updateBook(BookViewModel bookViewModel) {
-
         Book book = buildBookFromViewModel(bookViewModel);
         Book existingBook = bookDao.getBook(bookViewModel.getId());
         boolean isUpdated = false;
@@ -93,16 +88,20 @@ public class BookServiceLayer {
         return isUpdated;
     }
 
-    public BookViewModel findBook(int id) {
-        Book book = bookDao.getBook(id);
-        BookViewModel bvm;
-        if (book == null) {
-            throw new NotFoundException("Book id " + id + " not found!");
+    public boolean removeBook(int id) {
+        boolean isDeleted;
+        Book existingBook= bookDao.getBook(id);
+        if (existingBook == null) {
+            throw new NotFoundException("Book id " + id + " not found");
         } else {
-            bvm = buildViewModelFromBook(book);
-
+            try {
+                bookDao.deleteBook(id);
+                isDeleted = true;
+            } catch (Exception ex) {
+                isDeleted = false;
+            }
         }
-        return bvm;
+        return isDeleted;
     }
 
     //Helper Methods

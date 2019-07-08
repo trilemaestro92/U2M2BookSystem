@@ -34,7 +34,6 @@ public class BookDaoJdbcTemplateImpl implements BookDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-
     @Override
     @Transactional
     public Book addBook(Book book) {
@@ -59,6 +58,12 @@ public class BookDaoJdbcTemplateImpl implements BookDao {
     }
 
     @Override
+    public List<Book> getAllBooks() {
+        return jdbcTemplate.query(SELECT_ALL_BOOKS_SQL, this::mapRowToBook);
+    }
+
+    @Override
+    @Transactional
     public void updateBook(Book book) {
         jdbcTemplate.update(
                 UPDATE_BOOK_SQL,
@@ -70,11 +75,6 @@ public class BookDaoJdbcTemplateImpl implements BookDao {
     @Override
     public void deleteBook(int id) {
         jdbcTemplate.update(DELETE_BOOK_SQL, id);
-    }
-
-    @Override
-    public List<Book> getAllBooks() {
-        return jdbcTemplate.query(SELECT_ALL_BOOKS_SQL, this::mapRowToBook);
     }
 
     private Book mapRowToBook(ResultSet rs, int rowNum) throws SQLException {

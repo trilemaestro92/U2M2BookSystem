@@ -1,5 +1,6 @@
 package com.trilogyed.bookservice.model;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ public class BookViewModel {
     @NotNull(message = "author cannot be null")
     @Size(max = 50,message = "author cannot exceed 50 characters" )
     private String author;
+    @Valid
     private List<Note> notes;
 
     public BookViewModel(){

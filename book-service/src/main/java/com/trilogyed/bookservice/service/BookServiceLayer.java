@@ -14,12 +14,14 @@ import java.util.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Valid;
+
 
 @Component
 public class BookServiceLayer {
 
     public static final String EXCHANGE = "note-exchange";
-    public static final String ROUTING_KEY = "note.list.add.controller";
+    public static final String ROUTING_KEY = "note.controller";
 
 
     @Autowired
@@ -106,11 +108,7 @@ public class BookServiceLayer {
         return isDeleted;
     }
 
-    //Helper Methods
-
     private BookViewModel buildViewModelFromBook(Book book) {
-
-        //Assemble the album view model
         BookViewModel bvm = new BookViewModel();
         bvm.setId(book.getBookId());
         bvm.setAuthor(book.getAuthor());
@@ -133,6 +131,7 @@ public class BookServiceLayer {
 
     private void sendNotesToQueue(BookViewModel bookViewModel) {
         List<Note> noteList = bookViewModel.getNotes();
+
         if(bookViewModel.getNotes() != null){
             System.out.println("Sending note list");
 

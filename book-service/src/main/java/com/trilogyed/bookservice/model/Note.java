@@ -1,5 +1,6 @@
 package com.trilogyed.bookservice.model;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
@@ -9,8 +10,7 @@ public class Note {
     private int noteId;
     @NotNull(message = "book id can not be null")
     private int bookId;
-    @NotNull(message = "note can not be null")
-    @Size(max = 255, min = 1, message = "note cannot exceed 255 characters")
+    @Size(max = 255, min = 1, message = "note cannot be empty and not exceed 255 character")
     private String note;
 
     public Note() {

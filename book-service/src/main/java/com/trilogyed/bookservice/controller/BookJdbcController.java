@@ -44,7 +44,7 @@ public class BookJdbcController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBook(@PathVariable("id") int bookId) {
-        bookDao.deleteBook(bookId);
+        serviceLayer.removeBook(bookId);
     }
 
     @PutMapping("/{id}")

@@ -6,6 +6,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class MessageListener {
 
@@ -30,6 +31,7 @@ public class MessageListener {
 
             // Print the note for confirmation
             System.out.println("Created: " + note.toString());
+
         } else {
             Note note = msg;
             client.updateNote(msg, msg.getNoteId());

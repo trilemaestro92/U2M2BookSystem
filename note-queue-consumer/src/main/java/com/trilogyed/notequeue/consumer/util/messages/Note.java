@@ -2,6 +2,7 @@ package com.trilogyed.notequeue.consumer.util.messages;
 
 
 public class Note {
+
     private int noteId;
     private int bookId;
     private String note;

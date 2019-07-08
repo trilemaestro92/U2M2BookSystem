@@ -2,7 +2,6 @@ package com.trilogyed.noteservice.model;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
 import java.util.Objects;
 
 public class Note {
@@ -10,7 +9,7 @@ public class Note {
     private int noteId;
     @NotNull(message = "bookId can not be null")
     private int bookId;
-    @Size(max = 255, message = "note cannot exceed 255 characters")
+    @Size(max = 255, min = 1, message = "note cannot be empty and not exceed 255 characters")
     private String note;
 
     public Note() {

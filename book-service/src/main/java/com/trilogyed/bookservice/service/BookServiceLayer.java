@@ -15,6 +15,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 
+
 @Component
 public class BookServiceLayer {
 
@@ -129,6 +130,7 @@ public class BookServiceLayer {
 
     private void sendNotesToQueue(BookViewModel bookViewModel) {
         List<Note> noteList = bookViewModel.getNotes();
+
         if(bookViewModel.getNotes() != null){
             System.out.println("Sending note list");
 

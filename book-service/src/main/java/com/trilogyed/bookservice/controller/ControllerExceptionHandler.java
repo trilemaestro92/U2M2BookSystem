@@ -5,8 +5,10 @@ import com.trilogyed.bookservice.exception.NotFoundException;
 import org.springframework.hateoas.VndErrors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,6 +57,34 @@ public class ControllerExceptionHandler {
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public ResponseEntity<VndErrors> invalidFormat(InvalidFormatException e, WebRequest request){
         VndErrors error= new VndErrors(request.toString(),e.getMessage());
+        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error,HttpStatus.UNPROCESSABLE_ENTITY);
+        return responseEntity;
+    }
+
+    @ExceptionHandler(value = {HttpRequestMethodNotSupportedException.class})
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ResponseEntity<VndErrors> invalidFormat(HttpRequestMethodNotSupportedException e, WebRequest request){
+        String msg = "This route is not supported. Please refer to the API documentation for valid routes";
+        VndErrors error= new VndErrors(request.toString(), msg);
+        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error,HttpStatus.UNPROCESSABLE_ENTITY);
+        return responseEntity;
+    }
+
+    @ExceptionHandler(value = {HttpMessageNotReadableException.class})
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ResponseEntity<VndErrors> invalidFormat(HttpMessageNotReadableException e, WebRequest request){
+        String msg =  "The request body could not be read. Make sure all properties are present and all syntax is " +
+                "correct";
+        VndErrors error= new VndErrors(request.toString(), msg);
+        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error,HttpStatus.UNPROCESSABLE_ENTITY);
+        return responseEntity;
+    }
+
+    @ExceptionHandler(value = {NumberFormatException.class})
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ResponseEntity<VndErrors> invalidFormat(NumberFormatException e, WebRequest request){
+        String msg =  "The route path parameter was expected to be an integer. Please correct and try again.";
+        VndErrors error= new VndErrors(request.toString(), msg);
         ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error,HttpStatus.UNPROCESSABLE_ENTITY);
         return responseEntity;
     }

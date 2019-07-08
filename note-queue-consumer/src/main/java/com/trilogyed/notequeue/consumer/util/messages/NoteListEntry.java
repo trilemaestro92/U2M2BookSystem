@@ -1,9 +1,12 @@
 package com.trilogyed.notequeue.consumer.util.messages;
 
 
+import javax.validation.constraints.Size;
+
 public class NoteListEntry {
     private int noteId;
     private int bookId;
+//    @Size(max = 255, min= 1, message = "note cannot exceed 255 characters")
     private String note;
 
     public NoteListEntry(){}

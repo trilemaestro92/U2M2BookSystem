@@ -23,28 +23,24 @@ public class MessageListener {
     @RabbitListener(queues = NoteQueueConsumerApplication.QUEUE_NAME)
     public void receiveAddMessage(NoteListEntry msg) {
 
-        // this is the client (connection to the note-service) creating a POST with the msg comming in
-        NoteListEntry note = client.createNote(msg);
+        if (msg.getNoteId() == 0) {
 
-        // Print the note for confirmation
-        System.out.println(note.toString());
+            // this is the client (connection to the note-service) creating a POST with the msg comming in
+            NoteListEntry note = client.createNote(msg);
+
+            // Print the note for confirmation
+            System.out.println("Created: " + note.toString());
+        } else {
+            NoteListEntry note = msg;
+            client.updateNote(msg, msg.getNoteId());
+            System.out.println("Updated: " + note.toString());
+        }
+
 
         // ------ DO NOT -------
         // do not have a return for this listener. IF you use a return, the app will get stuck in a loop and make
         // infinite queues and addQueue exceptions. The purpose of THIS consumer is ONLY to create/update notes. The
         // produce does not need to received the finished addQueue; the notes are retrieved directly from note-service
     }
-
-
-//    @RabbitListener(queues = NoteQueueConsumerApplication.UPDATE_QUEUE_NAME)
-//    public void receiveUpdateMessage(NoteListEntry msg) {
-//
-//        String updateResponse = client.updateNote(msg, msg.getNoteId());
-//
-//        System.out.println(updateResponse);
-//    }
-//
-
-
 
 }

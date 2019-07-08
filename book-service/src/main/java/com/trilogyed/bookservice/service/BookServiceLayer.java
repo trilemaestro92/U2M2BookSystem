@@ -75,18 +75,16 @@ public class BookServiceLayer {
     public boolean updateBook(BookViewModel bookViewModel) {
         Book book = buildBookFromViewModel(bookViewModel);
         Book existingBook = bookDao.getBook(bookViewModel.getId());
+
         boolean isUpdated = false;
 
         if (existingBook == null) {
+            isUpdated = false;
             throw new NotFoundException("Book id " + bookViewModel.getId() + " not found");
         } else {
-            try {
                 bookDao.updateBook(book);
                 sendNotesToQueue(bookViewModel);
                 isUpdated = true;
-            } catch (Exception ex) {
-                isUpdated = false;
-            }
         }
         return isUpdated;
     }
@@ -130,18 +128,22 @@ public class BookServiceLayer {
 
     private void sendNotesToQueue(BookViewModel bookViewModel) {
         List<Note> noteList = bookViewModel.getNotes();
-
+        List<Note> existingNotes= noteClient.getNotesByBookId(bookViewModel.getId());
         if(bookViewModel.getNotes() != null){
             System.out.println("Sending note list");
-
             for(Note note: noteList){
-                note.setBookId(bookViewModel.getId());
-                rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, note);
+                //Checking if note id that is being updated is already associated with the book
+                if(existingNotes.stream().anyMatch(existingNote -> existingNote.getNoteId() == note.getNoteId() || note.getNoteId() == 0)){
+                    note.setBookId(bookViewModel.getId());
+                    rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, note);
+
+                }else {
+                    throw new NotFoundException("Note id " + note.getNoteId() + " not associated with book " + bookViewModel.getId());
+                }
             }
             System.out.println("Note list sent");
         }
     }
-
 }
 
 
